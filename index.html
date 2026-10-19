@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MELODY</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Playfair+Display:wght@400;500;600&family=Poppins:wght@300;400;500&display=swap');
+
+:root {
+  --rosa: #e8b8bd;
+  --rosa-oscuro: #b66d7b;
+  --crema: #fff8f1;
+  --texto: #594448;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 25px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(circle at 10% 15%, #f8dfe0 0, transparent 30%),
+    radial-gradient(circle at 90% 85%, #f4ded5 0, transparent 35%),
+    #fff8f3;
+  color: var(--texto);
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 620px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.intro {
+  margin-bottom: 35px;
+  animation: aparecer 1.2s ease;
+}
+
+.small-title {
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #b78388;
+  font-size: 11px;
+}
+
+h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(45px, 10vw, 68px);
+  font-weight: 600;
+  color: #a45f6c;
+  margin: 10px 0;
+}
+
+.intro p {
+  font-size: 13px;
+  color: #987d7b;
+  line-height: 1.8;
+}
+
+.envelope-area {
+  perspective: 1000px;
+  margin: 0 auto;
+  width: min(100%, 370px);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.envelope {
+  height: 235px;
+  position: relative;
+  transition: transform .5s ease;
+  filter: drop-shadow(0 15px 20px #bc8c8c25);
+}
+
+.envelope:hover {
+  transform: translateY(-5px);
+}
+
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  background: #e6b4b9;
+  border-radius: 8px;
+}
+
+.letter-preview {
+  position: absolute;
+  width: 88%;
+  height: 88%;
+  left: 6%;
+  bottom: 5%;
+  background: #fffaf4;
+  border-radius: 5px;
+  transition: transform 1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 23px;
+  color: #b16f7b;
+  font-family: 'Dancing Script', cursive;
+  font-size: 24px;
+}
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: #d99fa7;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top;
+  transition: transform .8s ease;
+  z-index: 4;
+}
+
+.front {
+  position: absolute;
+  inset: 0;
+  background: #edc6c8;
+  clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%);
+  border-radius: 8px;
+  z-index: 3;
+}
+
+.front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #e8b9bd;
+  clip-path: polygon(0 100%, 50% 42%, 100% 100%);
+}
+
+.seal {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background: #b76d7b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff3ef;
+  font-size: 23px;
+  z-index: 5;
+  box-shadow: 0 3px 8px #95525a35;
+  transition: opacity .3s;
+}
+
+.envelope.open .flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+.envelope.open .seal {
+  opacity: 0;
+}
+
+.envelope.open .letter-preview {
+  transform: translateY(-90px);
+}
+
+.tap-hint {
+  margin-top: 24px;
+  font-size: 13px;
+  color: #a4777c;
+  animation: latido 2s infinite;
+}
+
+.letter {
+  display: none;
+  margin-top: 38px;
+  text-align: left;
+  padding: clamp(22px, 5vw, 42px);
+  border: 1px solid #efdcd6;
+  border-radius: 15px;
+  background: rgba(255, 252, 247, .96);
+  box-shadow: 0 12px 45px #9b6b6b13;
+  animation: subir .9s ease both;
+}
+
+.letter.visible {
+  display: block;
+}
+
+.letter h2 {
+  text-align: center;
+  font-family: 'Dancing Script', cursive;
+  font-size: 37px;
+  color: #a45f6c;
+  margin: 0 0 25px;
+}
+
+.letter p {
+  font-size: 14px;
+  line-height: 2;
+  margin: 0 0 18px;
+  white-space: pre-line;
+}
+
+.emphasis {
+  color: #a45f6c;
+  font-weight: 500;
+}
+
+.signature {
+  text-align: right;
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px !important;
+  color: #a45f6c;
+  margin-top: 25px !important;
+}
+
+.final-button {
+  display: block;
+  margin: 27px auto 0;
+  padding: 13px 23px;
+  border: 1px solid #d7a1a7;
+  border-radius: 30px;
+  background: transparent;
+  color: #a45f6c;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.final-button:hover {
+  background: #f6e3e1;
+  transform: translateY(-2px);
+}
+
+.final-message {
+  display: none;
+  text-align: center;
+  padding: 25px 10px 5px;
+  animation: subir .7s ease both;
+}
+
+.final-message.visible {
+  display: block;
+}
+
+.final-message .heart {
+  font-size: 35px;
+  animation: latido 1.5s infinite;
+}
+
+.final-message h3 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 32px;
+  color: #a45f6c;
+}
+
+.final-message p {
+  font-size: 13px;
+  line-height: 2;
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 10px;
+  color: #bd9a97;
+  letter-spacing: 1px;
+}
+
+.floating-heart {
+  position: fixed;
+  bottom: -30px;
+  color: #d99fa7;
+  pointer-events: none;
+  z-index: 0;
+  animation: flotar linear forwards;
+  opacity: .65;
+}
+
+@keyframes flotar {
+  to {
+    transform: translateY(-115vh) rotate(35deg);
+    opacity: 0;
+  }
+}
+
+@keyframes latido {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes subir {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 420px) {
+  .envelope { height: 205px; }
+  .letter p { font-size: 13px; line-height: 1.9; }
+}
+</style>
+</head>
+
+<body>
+
+<main class="container">
+
+  <header class="intro">
+    <div class="small-title">Un pequeño detalle para</div>
+    <h1>Melody</h1>
+    <p>Hay algo que quiero decirte<br>con todo mi corazón...</p>
+  </header>
+
+  <div class="envelope-area" id="envelopeArea"
+       role="button" tabindex="0"
+       aria-label="Abrir el sobre">
+    <div class="envelope" id="envelope">
+      <div class="envelope-back"></div>
+
+      <div class="letter-preview">
+        Para Melody
+      </div>
+
+      <div class="flap"></div>
+      <div class="front"></div>
+
+      <div class="seal">M</div>
+    </div>
+  </div>
+
+  <div class="tap-hint" id="hint">
+    - Pulsa el sobre para abrir tu carta -
+  </div>
+
+  <article class="letter" id="letter">
+    <h2>Melody, perdóname</h2>
+
+    <p>Entiendo lo que me dices y tienes razón en que no debería haber juzgado sin saber. Aunque yo te dijera que era de broma, entiendo que te haya sentado mal y no quiero quitarle importancia a cómo te has sentido.</p>
+
+    <p>Perdóname, de verdad, porque no era mi intención hacerte daño ni hacerte sentir juzgada. Te tengo cariño, valoro mucho la amistad que tenemos y lo último que quiero es que te sientas mal conmigo.</p>
+
+    <p>No te digo esto para justificarme, sino porque reconozco que no lo he hecho bien. <span class="emphasis"><b>De verdad que estoy muy arrepentido</b></span> y siento mucho haberte hecho daño. No es algo que me tome a la ligera y me sabe mal haber provocado que te sintieras así.</p>
+
+    <p>Ya sabes que te he dicho que voy a hacer todo lo que esté en mi mano para que veas que de verdad me arrepiento. Quiero demostrártelo con hechos, no solamente con palabras, porque sé que decir <span class="emphasis"><b>lo siento</b></span> no borra cómo te has sentido.</p>
+
+    <p>Te pido perdón con todo mi corazón. Ojalá con el tiempo puedas ver que mi arrepentimiento es sincero. No quiero presionarte ni pedirte que estés bien de un día para otro; simplemente quiero que sepas que estoy muy arrepentido y lo importante que es para mí cuidar nuestra amistad.</p>
+
+    <p class="emphasis">Lo siento muchísimo, de corazón ❤️</p>
+
+    <button class="final-button" id="finalButton">
+      Un último detalle
+    </button>
+
+    <div class="final-message" id="finalMessage">
+      <div class="heart"></div>
+      <h3>Mi arrepentimiento es sincero</h3>
+      <p>No espero que unas palabras lo solucionen todo. Solo quiero demostrarte con mis actos que lo siento mucho, cuidar nuestra amistad y que te quiero mucho.</p>
+      <p>Gracias por leerlo</p>
+    </div>
+  </article>
+
+  <footer class="footer">
+    HECHO CON CARIÑO, SINCERIDAD Y ARREPENTIMIENTO ♡
+  </footer>
+
+</main>
+
+<script>
+const envelopeArea = document.getElementById('envelopeArea');
+const envelope = document.getElementById('envelope');
+const letter = document.getElementById('letter');
+const hint = document.getElementById('hint');
+const finalButton = document.getElementById('finalButton');
+const finalMessage = document.getElementById('finalMessage');
+
+let opened = false;
+
+function toggleEnvelope() {
+  opened = !opened;
+  envelope.classList.toggle('open', opened);
+
+  if (opened) {
+    hint.textContent = 'Una carta escrita de corazón';
+
+    // Espera a que se anime el sobre antes de mostrar la carta.
+    setTimeout(() => {
+      letter.classList.add('visible');
+      letter.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 450);
+  } else {
+    letter.classList.remove('visible');
+    finalMessage.classList.remove('visible');
+    finalButton.textContent = 'Un último detalle';
+    hint.textContent = 'Pulsa el sobre para abrir tu carta';
+  }
+}
+
+envelopeArea.addEventListener('click', toggleEnvelope);
+
+envelopeArea.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    toggleEnvelope();
+  }
+});
+
+finalButton.addEventListener('click', () => {
+  const isVisible = finalMessage.classList.toggle('visible');
+
+  finalButton.textContent = isVisible
+    ? 'Cerrar mensaje final'
+    : 'Un último detalle';
+
+  if (isVisible) {
+    finalMessage.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
+    });
+  }
+});
+
+setInterval(createHeart, 1100);
+</script>
+
+</body>
+</html>
